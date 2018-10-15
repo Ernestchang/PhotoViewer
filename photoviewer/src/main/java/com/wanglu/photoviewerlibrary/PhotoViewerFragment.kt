@@ -2,12 +2,14 @@ package com.wanglu.photoviewerlibrary
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_picture.*
+
 
 class PhotoViewerFragment : BaseLazyFragment() {
 
@@ -28,35 +30,43 @@ class PhotoViewerFragment : BaseLazyFragment() {
         val mImgSize: IntArray = arguments!!.getIntArray("img_size")
         val mPicData = arguments!!.getString("pic_data")
 
+        if (PhotoViewer.mProcessInterface != null) {
+            PhotoViewer.mProcessInterface!!.processButton(tv_origin, iv_save)
+        }
+
         if (PhotoViewer.mInterface != null) {
             PhotoViewer.mInterface!!.show(mIv, mPicData)
         } else {
             throw RuntimeException("请设置图片加载回调 ShowImageViewInterface")
         }
 
-        if (PhotoViewer.mProcessInterface != null) {
-            PhotoViewer.mProcessInterface!!.processButton(tv_origin, iv_save)
-        }
-
         var alpha = 1f  // 透明度
         mIv.setExitLocation(mExitLocation)
         mIv.setImgSize(mImgSize)
 
-        // 循环查看是否添加上了图片
-        Thread(Runnable {
-            while (true) {
-                if (mIv.drawable != null) {
-                    activity!!.runOnUiThread {
-                        loading.visibility = View.GONE
-                    }
-                    break
-                }
-                Thread.sleep(300)
-            }
-        }).start()
+//        val dm = resources.displayMetrics
+//        var heigth = dm.heightPixels
+//        var width = dm.widthPixels
+//        mIv.translationX = mExitLocation[0].toFloat() - width / 2
+//        mIv.translationY = mExitLocation[1].toFloat() - heigth / 2
+//        mIv.scaleX = mImgSize[0].toFloat() / width
+//        mIv.scaleY = mImgSize[0].toFloat() / width
+
+//        // 循环查看是否添加上了图片
+//        Thread(Runnable {
+//            while (true) {
+//                if (mIv.drawable != null) {
+//                    activity!!.runOnUiThread {
+//                        loading.visibility = View.GONE
+//                    }
+//                    break
+//                }
+//                Thread.sleep(300)
+//            }
+//        }).start()
 
         var intAlpha = 255
-        root.background.alpha = intAlpha
+//        root.background.alpha = intAlpha
         mIv.rootView = root
         mIv.setOnViewFingerUpListener {
             alpha = 1f
@@ -73,17 +83,19 @@ class PhotoViewerFragment : BaseLazyFragment() {
         // 添加点击进入时的动画
         if (arguments!!.getBoolean("in_anim", true))
             mIv.post {
-
+                mIv.visibility = View.VISIBLE
                 val scaleOa = ObjectAnimator.ofFloat(mIv, "scale", mImgSize[0].toFloat() / mIv.width, 1f)
                 val xOa = ObjectAnimator.ofFloat(mIv, "translationX", mExitLocation[0].toFloat() - mIv.width / 2, 0f)
                 val yOa = ObjectAnimator.ofFloat(mIv, "translationY", mExitLocation[1].toFloat() - mIv.height / 2, 0f)
-
+                val alphaOa = ValueAnimator.ofInt(0, 255)
+                alphaOa.addUpdateListener({ valueAnimator ->
+                    root.background.alpha = valueAnimator.animatedValue as Int
+                })
                 val set = AnimatorSet()
-                set.duration = 150
-                set.playTogether(scaleOa, xOa, yOa)
+                set.duration = 250
+                set.playTogether(scaleOa, xOa, yOa, alphaOa)
                 set.start()
             }
-
 
         root.isFocusableInTouchMode = true
         root.requestFocus()
@@ -101,7 +113,7 @@ class PhotoViewerFragment : BaseLazyFragment() {
 
             mIv.scrollBy((-dx).toInt(), (-dy).toInt())  // 移动图像
             alpha -= dy * 0.001f
-            intAlpha -= (dy * 0.5).toInt()
+            intAlpha -= (dy * 0.2).toInt()
             if (alpha > 1) alpha = 1f
             else if (alpha < 0) alpha = 0f
             if (intAlpha < 0) intAlpha = 0

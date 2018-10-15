@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.ImageView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.wanglu.photoviewerlibrary.PhotoViewer
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -31,7 +30,7 @@ class MainActivity : AppCompatActivity() {
                     .setImgContainer(gv)
                     .setShowImageViewInterface(object : PhotoViewer.ShowImageViewInterface {
                         override fun show(iv: ImageView, url: String) {
-                            Glide.with(iv.context).load(url).apply(RequestOptions.placeholderOf(R.mipmap.ic_launcher)).into(iv)
+                            Glide.with(iv.context).load(url).into(iv)
                         }
                     })
                     .start(this)

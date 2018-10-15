@@ -51,7 +51,7 @@ object PhotoViewer {
     }
 
     interface ProcessButtonInterface {
-        fun processButton(tvOrigin: TextView, ivSave: ImageView)
+        fun processButton(tvOrigin: TextView, ivSave: ImageView, ivFull: ImageView)
     }
 
     /**

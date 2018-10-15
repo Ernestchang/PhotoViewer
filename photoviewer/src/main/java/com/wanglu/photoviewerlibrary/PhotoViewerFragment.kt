@@ -11,7 +11,6 @@ import kotlinx.android.synthetic.main.item_picture.*
 
 class PhotoViewerFragment : BaseLazyFragment() {
 
-
     var exitListener: OnExitListener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -33,6 +32,10 @@ class PhotoViewerFragment : BaseLazyFragment() {
             PhotoViewer.mInterface!!.show(mIv, mPicData)
         } else {
             throw RuntimeException("请设置图片加载回调 ShowImageViewInterface")
+        }
+
+        if (PhotoViewer.mProcessInterface != null) {
+            PhotoViewer.mProcessInterface!!.processButton(tv_origin, iv_save)
         }
 
         var alpha = 1f  // 透明度

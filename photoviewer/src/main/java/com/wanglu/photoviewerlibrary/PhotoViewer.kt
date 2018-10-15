@@ -12,10 +12,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.*
 
 
 @SuppressLint("StaticFieldLeak")
@@ -24,6 +21,7 @@ import android.widget.LinearLayout
  */
 object PhotoViewer {
     internal var mInterface: ShowImageViewInterface? = null
+    internal var mProcessInterface: ProcessButtonInterface? = null
 
     private lateinit var imgData: ArrayList<String> // 图片数据
     private lateinit var container: ViewGroup   // 存放图片的容器， ListView/GridView/RecyclerView
@@ -55,11 +53,20 @@ object PhotoViewer {
         fun show(iv: ImageView, url: String)
     }
 
+    interface ProcessButtonInterface {
+        fun processButton(tvOrigin: TextView, ivSave: ImageView)
+    }
+
     /**
      * 设置显示ImageView的接口
      */
     fun setShowImageViewInterface(i: ShowImageViewInterface): PhotoViewer {
         mInterface = i
+        return this
+    }
+
+    fun setProcessButtonInterface(i: ProcessButtonInterface): PhotoViewer {
+        mProcessInterface = i
         return this
     }
 
@@ -95,7 +102,7 @@ object PhotoViewer {
      * 获取itemView
      */
     private fun getItemView(): View {
-        if(clickView == null) {
+        if (clickView == null) {
             val itemView = if (container is AbsListView) {
                 val absListView = container as AbsListView
                 absListView.getChildAt(currentPage - absListView.firstVisiblePosition)
@@ -115,7 +122,7 @@ object PhotoViewer {
                 result = itemView as ImageView
             }
             return result!!
-        }else{
+        } else {
             return clickView!!
         }
     }

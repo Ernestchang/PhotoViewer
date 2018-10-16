@@ -1,9 +1,7 @@
 package com.wanglu.photoviewerlibrary.single
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
@@ -132,13 +130,11 @@ object SinglePhoto {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.KITKAT)
     fun start(activity: AppCompatActivity) {
         show(activity)
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.KITKAT)
     fun show(activity: AppCompatActivity) {
 
         val decorView = activity.window.decorView as ViewGroup

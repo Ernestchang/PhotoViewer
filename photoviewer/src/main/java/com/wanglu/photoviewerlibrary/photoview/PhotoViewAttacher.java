@@ -20,6 +20,7 @@ import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -414,7 +415,7 @@ public class PhotoViewAttacher implements View.OnTouchListener,
                                 }
                             }else{
                                 // 如果不是缩放中则判断是否小于400
-                                if (getScale() < mMinScale && mImageView.getRootView().getBackground().getAlpha() > 0){
+                                if (getScale() < mMinScale && DrawableCompat.getAlpha(mImageView.getRootView().getBackground()) > 0){
                                     RectF rect = getDisplayRect();
                                     if (rect != null) {
                                         v.post(new AnimatedZoomRunnable(getScale(), mMinScale,

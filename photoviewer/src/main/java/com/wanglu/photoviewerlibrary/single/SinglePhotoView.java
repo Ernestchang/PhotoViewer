@@ -25,8 +25,10 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.View;
 import android.widget.Scroller;
@@ -112,11 +114,14 @@ public class SinglePhotoView extends AppCompatImageView {
                 alpha = 1f;
                 intAlpha = 255;
                 // 这里恢复位置和透明度
-                if (getRootView().getBackground().getAlpha() < 255 && mExitListener != null) {
+
+                Log.e("ernest", "DrawableCompat.getAlpha(getRootView().getBackground()):" + DrawableCompat.getAlpha(getRootView().getBackground()));
+
+                if (DrawableCompat.getAlpha(getRootView().getBackground()) < 255 && mExitListener != null) {
                     exit();
                 } else {
                     ValueAnimator va = ValueAnimator.ofFloat(SinglePhotoView.this.getAlpha(), 1f);
-                    ValueAnimator bgVa = ValueAnimator.ofInt(getRootView().getBackground().getAlpha(), 255);
+                    ValueAnimator bgVa = ValueAnimator.ofInt(DrawableCompat.getAlpha(getRootView().getBackground()), 255);
                     va.setDuration(200);
                     bgVa.setDuration(200);
                     va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -154,13 +159,11 @@ public class SinglePhotoView extends AppCompatImageView {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void exit() {
 
         Matrix m = new Matrix();
-
-        m.postScale(((float) mImgSize[0] / getWidth()), ((float) mImgSize[1] / getHeight()));
-
+        m.postScale(((float) mImgSize[0] / getMeasuredWidth()), ((float) mImgSize[1] / getMeasuredHeight()));
+        Log.e("ernest", "attacher.getScale():" + attacher.getScale() + ",attacher.getScale(m):" + attacher.getScale(m));
         ObjectAnimator scaleOa = ObjectAnimator.ofFloat(this, "scale", attacher.getScale(m));
 
         ObjectAnimator xOa = ObjectAnimator.ofFloat(this, "translationX", mExitLocation[0] - getWidth() / 2 + getScrollX());
@@ -171,8 +174,8 @@ public class SinglePhotoView extends AppCompatImageView {
         set.playTogether(scaleOa, xOa, yOa);
 
 
-        if (getRootView().getBackground().getAlpha() > 0) {
-            ValueAnimator bgVa = ValueAnimator.ofInt(getRootView().getBackground().getAlpha(), 0);
+        if (DrawableCompat.getAlpha(getRootView().getBackground()) > 0) {
+            ValueAnimator bgVa = ValueAnimator.ofInt(DrawableCompat.getAlpha(getRootView().getBackground()), 0);
             bgVa.setDuration(250);
             bgVa.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override

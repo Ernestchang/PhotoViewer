@@ -117,7 +117,6 @@ public class SinglePhotoViewAttacher implements View.OnTouchListener,
     private ScaleType mScaleType = ScaleType.FIT_CENTER;
 
 
-
     private OnGestureListener onGestureListener = new OnGestureListener() {
         @Override
         public void onDrag(float dx, float dy) {
@@ -364,7 +363,7 @@ public class SinglePhotoViewAttacher implements View.OnTouchListener,
         return (float) Math.sqrt((float) Math.pow(getValue(mSuppMatrix, Matrix.MSCALE_X), 2) + (float) Math.pow(getValue(mSuppMatrix, Matrix.MSKEW_Y), 2));
     }
 
-    public float getScale(Matrix matrix){
+    public float getScale(Matrix matrix) {
         return (float) Math.sqrt((float) Math.pow(getValue(matrix, Matrix.MSCALE_X), 2) + (float) Math.pow(getValue(matrix, Matrix.MSKEW_Y), 2));
     }
 
@@ -429,9 +428,9 @@ public class SinglePhotoViewAttacher implements View.OnTouchListener,
                                         handled = true;
                                     }
                                 }
-                            }else{
+                            } else {
                                 // 如果不是缩放中则判断是否小于400
-                                if (getScale() < mMinScale && mImageView.getRootView().getBackground().getAlpha() > 0){
+                                if (getScale() < mMinScale && mImageView.getRootView().getBackground().getAlpha() == 255) {
                                     RectF rect = getDisplayRect();
                                     if (rect != null) {
                                         v.post(new AnimatedZoomRunnable(getScale(), mMinScale,

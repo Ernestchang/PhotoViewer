@@ -25,6 +25,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
@@ -144,7 +145,6 @@ public class PhotoView extends AppCompatImageView {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void exit() {
 
         Matrix m = new Matrix();
@@ -161,8 +161,8 @@ public class PhotoView extends AppCompatImageView {
         set.playTogether(scaleOa, xOa, yOa);
 
 
-        if (getRootView().getBackground().getAlpha() > 0) {
-            ValueAnimator bgVa = ValueAnimator.ofInt(getRootView().getBackground().getAlpha(), 0);
+        if (DrawableCompat.getAlpha(getRootView().getBackground()) > 0) {
+            ValueAnimator bgVa = ValueAnimator.ofInt(DrawableCompat.getAlpha(getRootView().getBackground()), 0);
             bgVa.setDuration(250);
             bgVa.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override

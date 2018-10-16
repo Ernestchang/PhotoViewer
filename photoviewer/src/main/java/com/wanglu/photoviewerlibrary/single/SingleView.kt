@@ -4,9 +4,9 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.app.Activity
-import android.os.Build
+import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.os.Bundle
-import android.support.annotation.RequiresApi
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +17,6 @@ import android.widget.TextView
 import com.wanglu.photoviewerlibrary.R
 import kotlinx.android.synthetic.main.item_picture_single.view.*
 
-@RequiresApi(Build.VERSION_CODES.KITKAT)
 class SingleView constructor(context: Activity, arguments: Bundle) : FrameLayout(context) {
 
     var exitListener: OnExitListener? = null
@@ -105,18 +104,27 @@ class SingleView constructor(context: Activity, arguments: Bundle) : FrameLayout
         })
 
         mIv.setOnViewDragListener { dx, dy ->
-
             mIv.scrollBy((-dx).toInt(), (-dy).toInt())  // 移动图像
             alpha -= dy * 0.001f
             intAlpha -= (dy * 0.2).toInt()
+
             if (alpha > 1) alpha = 1f
             else if (alpha < 0) alpha = 0f
+
             if (intAlpha < 0) intAlpha = 0
             else if (intAlpha > 255) intAlpha = 255
             root.background.alpha = intAlpha    // 更改透明度
 
-//            if (alpha >= 0.6)
+//            if (intAlpha >= 140)
 //                mIv.attacher.scale = (intAlpha / 255.0f)   // 更改大小
+
+            if (dy > 0 && alpha >= 0.6) {
+                Log.e("ernest", "set alpha");
+                mIv.attacher.scale = alpha
+            }
+
+            Log.e("ernest", "alpha:" + alpha + ",intAlpha:" + intAlpha + ",root.background.alpha" + root.background.alpha + ",mIv.attacher.scale:" + mIv.attacher.scale)
+
         }
 
 

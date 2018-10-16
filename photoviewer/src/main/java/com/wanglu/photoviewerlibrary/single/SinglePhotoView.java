@@ -28,7 +28,6 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.View;
 import android.widget.Scroller;
@@ -114,9 +113,6 @@ public class SinglePhotoView extends AppCompatImageView {
                 alpha = 1f;
                 intAlpha = 255;
                 // 这里恢复位置和透明度
-
-                Log.e("ernest", "DrawableCompat.getAlpha(getRootView().getBackground()):" + DrawableCompat.getAlpha(getRootView().getBackground()));
-
                 if (DrawableCompat.getAlpha(getRootView().getBackground()) < 255 && mExitListener != null) {
                     exit();
                 } else {
@@ -163,7 +159,6 @@ public class SinglePhotoView extends AppCompatImageView {
 
         Matrix m = new Matrix();
         m.postScale(((float) mImgSize[0] / getMeasuredWidth()), ((float) mImgSize[1] / getMeasuredHeight()));
-        Log.e("ernest", "attacher.getScale():" + attacher.getScale() + ",attacher.getScale(m):" + attacher.getScale(m));
         ObjectAnimator scaleOa = ObjectAnimator.ofFloat(this, "scale", attacher.getScale(m));
 
         ObjectAnimator xOa = ObjectAnimator.ofFloat(this, "translationX", mExitLocation[0] - getWidth() / 2 + getScrollX());

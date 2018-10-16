@@ -4,9 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.app.Activity
-import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -119,12 +117,8 @@ class SingleView constructor(context: Activity, arguments: Bundle) : FrameLayout
 //                mIv.attacher.scale = (intAlpha / 255.0f)   // 更改大小
 
             if (dy > 0 && alpha >= 0.6) {
-                Log.e("ernest", "set alpha");
                 mIv.attacher.scale = alpha
             }
-
-            Log.e("ernest", "alpha:" + alpha + ",intAlpha:" + intAlpha + ",root.background.alpha" + root.background.alpha + ",mIv.attacher.scale:" + mIv.attacher.scale)
-
         }
 
 

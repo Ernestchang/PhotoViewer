@@ -3,7 +3,7 @@ package com.wanglu.photoviewerlibrary.single
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
-import android.content.Context
+import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
@@ -15,9 +15,10 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.wanglu.photoviewerlibrary.R
+import kotlinx.android.synthetic.main.item_picture_single.view.*
 
 @RequiresApi(Build.VERSION_CODES.KITKAT)
-class SingleView constructor(context: Context, arguments: Bundle) : FrameLayout(context) {
+class SingleView constructor(context: Activity, arguments: Bundle) : FrameLayout(context) {
 
     var exitListener: OnExitListener? = null
 
@@ -60,6 +61,19 @@ class SingleView constructor(context: Context, arguments: Bundle) : FrameLayout(
                 exitListener!!.exit()
             }
         }
+
+        // 循环查看是否添加上了图片
+        Thread(Runnable {
+            while (true) {
+                if (mIv.drawable != null) {
+                    context.runOnUiThread {
+                        loading.visibility = View.GONE
+                    }
+                    break
+                }
+                Thread.sleep(300)
+            }
+        }).start()
 
         // 添加点击进入时的动画
         if (arguments!!.getBoolean("in_anim", true))

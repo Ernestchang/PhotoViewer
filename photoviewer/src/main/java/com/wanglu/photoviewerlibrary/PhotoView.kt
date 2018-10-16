@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.wanglu.photoviewerlibrary.single.SingleView
 
 
 @SuppressLint("StaticFieldLeak")
@@ -313,30 +312,6 @@ object PhotoView {
 //                }
 //            }
         decorView.addView(frameLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-
-    }
-
-    fun showSingle(activity: AppCompatActivity) {
-
-
-        val decorView = activity.window.decorView as ViewGroup
-
-
-        val b = Bundle()
-        b.putString("pic_data", imgData[0])
-        b.putIntArray("exit_location", getCurrentViewLocation())
-        b.putIntArray("img_size", intArrayOf(getItemView().measuredWidth, getItemView().measuredHeight))
-//
-        val f = SingleView(activity, b)
-        f.exitListener = object : SingleView.OnExitListener {
-            override fun exit() {
-                activity.runOnUiThread {
-                    decorView.removeView(f)
-                }
-            }
-
-        }
-        decorView.addView(f, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
     }
 

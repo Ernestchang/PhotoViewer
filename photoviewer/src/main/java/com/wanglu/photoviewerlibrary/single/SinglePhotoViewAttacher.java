@@ -430,14 +430,14 @@ public class SinglePhotoViewAttacher implements View.OnTouchListener,
                                 }
                             } else {
                                 // 如果不是缩放中则判断是否小于400
-                                if (getScale() < mMinScale && mImageView.getRootView().getBackground().getAlpha() == 255) {
-                                    RectF rect = getDisplayRect();
-                                    if (rect != null) {
-                                        v.post(new AnimatedZoomRunnable(getScale(), mMinScale,
-                                                rect.centerX(), rect.centerY()));
-                                        handled = true;
-                                    }
-                                }
+//                                if (getScale() < mMinScale && mImageView.getRootView().getBackground().getAlpha() == 255) {
+//                                    RectF rect = getDisplayRect();
+//                                    if (rect != null) {
+//                                        v.post(new AnimatedZoomRunnable(getScale(), mMinScale,
+//                                                rect.centerX(), rect.centerY()));
+//                                        handled = true;
+//                                    }
+//                                }
                             }
 
                             if (mOnViewFingerUpListener != null) {

@@ -116,7 +116,7 @@ class SingleView constructor(context: Activity, arguments: Bundle) : FrameLayout
 //            if (intAlpha >= 140)
 //                mIv.attacher.scale = (intAlpha / 255.0f)   // 更改大小
 
-            if (dy > 0 && alpha >= 0.6) {
+            if (alpha >= 0.6) {
                 mIv.attacher.scale = alpha
             }
         }

@@ -1,41 +1,43 @@
-package com.wanglu.photoviewerlibrary
+package com.wanglu.photoviewerlibrary.single
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import kotlinx.android.synthetic.main.item_picture.*
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.RelativeLayout
+import android.widget.TextView
+import com.wanglu.photoviewerlibrary.R
 
-
-class PhotoViewerFragment : BaseLazyFragment() {
+@RequiresApi(Build.VERSION_CODES.KITKAT)
+class SingleView constructor(context: Context, arguments: Bundle) : FrameLayout(context) {
 
     var exitListener: OnExitListener? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
-        return inflater.inflate(R.layout.item_picture, container, false)
-    }
-
-    interface OnExitListener {
-        fun exit()
-    }
-
-    override fun onLazyLoad() {
+    init {
+        LayoutInflater.from(context).inflate(R.layout.item_picture_single, this, true)
+        val mIv = findViewById<SinglePhotoView>(R.id.mIv)
+        val iv_save = findViewById<ImageView>(R.id.iv_save)
+        val tv_origin = findViewById<TextView>(R.id.tv_origin)
+        val root = findViewById<RelativeLayout>(R.id.root)
 
         val mExitLocation: IntArray = arguments!!.getIntArray("exit_location")
         val mImgSize: IntArray = arguments!!.getIntArray("img_size")
         val mPicData = arguments!!.getString("pic_data")
 
-        if (PhotoView.mProcessInterface != null) {
-            PhotoView.mProcessInterface!!.processButton(tv_origin, iv_save, mIv)
+        if (SinglePhoto.mProcessInterface != null) {
+            SinglePhoto.mProcessInterface!!.processButton(tv_origin, iv_save, mIv)
         }
 
-        if (PhotoView.mInterface != null) {
-            PhotoView.mInterface!!.show(mIv, mPicData)
+        if (SinglePhoto.mInterface != null) {
+            SinglePhoto.mInterface!!.show(mIv, mPicData)
         } else {
             throw RuntimeException("请设置图片加载回调 ShowImageViewInterface")
         }
@@ -43,27 +45,6 @@ class PhotoViewerFragment : BaseLazyFragment() {
         var alpha = 1f  // 透明度
         mIv.setExitLocation(mExitLocation)
         mIv.setImgSize(mImgSize)
-
-//        val dm = resources.displayMetrics
-//        var heigth = dm.heightPixels
-//        var width = dm.widthPixels
-//        mIv.translationX = mExitLocation[0].toFloat() - width / 2
-//        mIv.translationY = mExitLocation[1].toFloat() - heigth / 2
-//        mIv.scaleX = mImgSize[0].toFloat() / width
-//        mIv.scaleY = mImgSize[0].toFloat() / width
-
-//        // 循环查看是否添加上了图片
-//        Thread(Runnable {
-//            while (true) {
-//                if (mIv.drawable != null) {
-//                    activity!!.runOnUiThread {
-//                        loading.visibility = View.GONE
-//                    }
-//                    break
-//                }
-//                Thread.sleep(300)
-//            }
-//        }).start()
 
         var intAlpha = 255
 //        root.background.alpha = intAlpha
@@ -120,18 +101,20 @@ class PhotoViewerFragment : BaseLazyFragment() {
             else if (intAlpha > 255) intAlpha = 255
             root.background.alpha = intAlpha    // 更改透明度
 
-            if (alpha >= 0.6)
-                mIv.attacher.scale = alpha   // 更改大小
-
-
+//            if (alpha >= 0.6)
+//                mIv.attacher.scale = (intAlpha / 255.0f)   // 更改大小
         }
 
 
         mIv.setOnClickListener {
-
             mIv.exit()
         }
-
     }
+
+
+    interface OnExitListener {
+        fun exit()
+    }
+
 
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.wanglu.photoviewerlibrary.photoview;
+package com.wanglu.photoviewerlibrary.single;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -31,6 +31,16 @@ import android.view.GestureDetector;
 import android.view.View;
 import android.widget.Scroller;
 
+import com.wanglu.photoviewerlibrary.photoview.OnMatrixChangedListener;
+import com.wanglu.photoviewerlibrary.photoview.OnOutsidePhotoTapListener;
+import com.wanglu.photoviewerlibrary.photoview.OnPhotoTapListener;
+import com.wanglu.photoviewerlibrary.photoview.OnScaleChangedListener;
+import com.wanglu.photoviewerlibrary.photoview.OnSingleFlingListener;
+import com.wanglu.photoviewerlibrary.photoview.OnViewDragListener;
+import com.wanglu.photoviewerlibrary.photoview.OnViewFingerUpListener;
+import com.wanglu.photoviewerlibrary.photoview.OnViewTapListener;
+import com.wanglu.photoviewerlibrary.photoview.PhotoViewAttacher;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,9 +48,9 @@ import java.util.TimerTask;
  * A zoomable ImageView. See {@link PhotoViewAttacher} for most of the details on how the zooming
  * is accomplished
  */
-public class PhotoView extends AppCompatImageView {
+public class SinglePhotoView extends AppCompatImageView {
 
-    private PhotoViewAttacher attacher;
+    private SinglePhotoViewAttacher attacher;
     private ScaleType pendingScaleType;
     private Scroller mScroller;
     private OnViewFingerUpL l;
@@ -69,22 +79,22 @@ public class PhotoView extends AppCompatImageView {
     }
 
 
-    public PhotoView(Context context) {
+    public SinglePhotoView(Context context) {
         this(context, null);
     }
 
-    public PhotoView(Context context, AttributeSet attr) {
+    public SinglePhotoView(Context context, AttributeSet attr) {
         this(context, attr, 0);
     }
 
-    public PhotoView(Context context, AttributeSet attr, int defStyle) {
+    public SinglePhotoView(Context context, AttributeSet attr, int defStyle) {
         super(context, attr, defStyle);
         mScroller = new Scroller(context);
         init();
     }
 
     private void init() {
-        attacher = new PhotoViewAttacher(this);
+        attacher = new SinglePhotoViewAttacher(this);
 
 
         //We always pose as a Matrix scale type, though we can change to another scale type
@@ -102,17 +112,17 @@ public class PhotoView extends AppCompatImageView {
                 alpha = 1f;
                 intAlpha = 255;
                 // 这里恢复位置和透明度
-                if ((getRootView().getBackground().getAlpha() == 0) && (mExitListener != null)) {
+                if (getRootView().getBackground().getAlpha() < 255 && mExitListener != null) {
                     exit();
                 } else {
-                    ValueAnimator va = ValueAnimator.ofFloat(PhotoView.this.getAlpha(), 1f);
+                    ValueAnimator va = ValueAnimator.ofFloat(SinglePhotoView.this.getAlpha(), 1f);
                     ValueAnimator bgVa = ValueAnimator.ofInt(getRootView().getBackground().getAlpha(), 255);
                     va.setDuration(200);
                     bgVa.setDuration(200);
                     va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                         @Override
                         public void onAnimationUpdate(ValueAnimator animation) {
-                            PhotoView.this.setAlpha((Float) animation.getAnimatedValue());
+                            SinglePhotoView.this.setAlpha((Float) animation.getAnimatedValue());
                         }
                     });
                     va.start();
@@ -202,7 +212,7 @@ public class PhotoView extends AppCompatImageView {
      *
      * @return the attacher.
      */
-    public PhotoViewAttacher getAttacher() {
+    public SinglePhotoViewAttacher getAttacher() {
         return attacher;
     }
 

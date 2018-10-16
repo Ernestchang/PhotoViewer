@@ -24,7 +24,7 @@ import android.view.ViewConfiguration;
 /**
  * Does a whole lot of gesture detecting.
  */
-class CustomGestureDetector {
+public class CustomGestureDetector {
 
     private static final int INVALID_POINTER_ID = -1;
 
@@ -42,7 +42,7 @@ class CustomGestureDetector {
     private boolean mIsFirstDragging = true;
 
 
-    CustomGestureDetector(Context context, OnGestureListener listener) {
+    public CustomGestureDetector(Context context, OnGestureListener listener) {
         final ViewConfiguration configuration = ViewConfiguration
                 .get(context);
         mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
@@ -211,7 +211,7 @@ class CustomGestureDetector {
             mActivePointerIndex = ev
                     .findPointerIndex(mActivePointerId != INVALID_POINTER_ID ? mActivePointerId
                             : 0);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

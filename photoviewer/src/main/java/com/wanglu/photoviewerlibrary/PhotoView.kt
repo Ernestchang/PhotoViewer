@@ -10,13 +10,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.wanglu.photoviewerlibrary.single.SingleView
 
 
 @SuppressLint("StaticFieldLeak")
 /**
  * Created by WangLu on 2018/7/15.
  */
-object PhotoViewer {
+object PhotoView {
     internal var mInterface: ShowImageViewInterface? = null
     internal var mProcessInterface: ProcessButtonInterface? = null
 
@@ -57,12 +58,12 @@ object PhotoViewer {
     /**
      * 设置显示ImageView的接口
      */
-    fun setShowImageViewInterface(i: ShowImageViewInterface): PhotoViewer {
+    fun setShowImageViewInterface(i: ShowImageViewInterface): PhotoView {
         mInterface = i
         return this
     }
 
-    fun setProcessButtonInterface(i: ProcessButtonInterface): PhotoViewer {
+    fun setProcessButtonInterface(i: ProcessButtonInterface): PhotoView {
         mProcessInterface = i
         return this
     }
@@ -70,7 +71,7 @@ object PhotoViewer {
     /**
      * 设置点击一个图片
      */
-    fun setClickSingleImg(data: String, view: View): PhotoViewer {
+    fun setClickSingleImg(data: String, view: View): PhotoView {
         imgData = arrayListOf(data)
         clickView = view
         return this
@@ -79,18 +80,18 @@ object PhotoViewer {
     /**
      * 设置图片数据
      */
-    fun setData(data: ArrayList<String>): PhotoViewer {
+    fun setData(data: ArrayList<String>): PhotoView {
         imgData = data
         return this
     }
 
 
-    fun setImgContainer(container: AbsListView): PhotoViewer {
+    fun setImgContainer(container: AbsListView): PhotoView {
         this.container = container
         return this
     }
 
-    fun setImgContainer(container: RecyclerView): PhotoViewer {
+    fun setImgContainer(container: RecyclerView): PhotoView {
         this.container = container
         return this
     }
@@ -139,7 +140,7 @@ object PhotoViewer {
     /**
      * 设置当前页， 从0开始
      */
-    fun setCurrentPage(page: Int): PhotoViewer {
+    fun setCurrentPage(page: Int): PhotoView {
         currentPage = page
         return this
     }
@@ -226,6 +227,7 @@ object PhotoViewer {
             }
 
         })
+        viewPager.isEnabled = false;
 
         frameLayout.addView(photoViewLayout)
 
@@ -311,6 +313,30 @@ object PhotoViewer {
 //                }
 //            }
         decorView.addView(frameLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+
+    }
+
+    fun showSingle(activity: AppCompatActivity) {
+
+
+        val decorView = activity.window.decorView as ViewGroup
+
+
+        val b = Bundle()
+        b.putString("pic_data", imgData[0])
+        b.putIntArray("exit_location", getCurrentViewLocation())
+        b.putIntArray("img_size", intArrayOf(getItemView().measuredWidth, getItemView().measuredHeight))
+//
+        val f = SingleView(activity, b)
+        f.exitListener = object : SingleView.OnExitListener {
+            override fun exit() {
+                activity.runOnUiThread {
+                    decorView.removeView(f)
+                }
+            }
+
+        }
+        decorView.addView(f, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
     }
 

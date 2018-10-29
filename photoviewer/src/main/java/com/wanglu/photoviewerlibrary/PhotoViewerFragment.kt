@@ -30,12 +30,12 @@ class PhotoViewerFragment : BaseLazyFragment() {
         val mImgSize: IntArray = arguments!!.getIntArray("img_size")
         val mPicData = arguments!!.getString("pic_data")
 
-        if (PhotoView.mProcessInterface != null) {
-            PhotoView.mProcessInterface!!.processButton(tv_origin, iv_save, mIv)
+        if (PhotoViewer.mProcessInterface != null) {
+            PhotoViewer.mProcessInterface!!.processButton(tv_origin, iv_save, mIv)
         }
 
-        if (PhotoView.mInterface != null) {
-            PhotoView.mInterface!!.show(mIv, mPicData)
+        if (PhotoViewer.mInterface != null) {
+            PhotoViewer.mInterface!!.show(mIv, mPicData)
         } else {
             throw RuntimeException("请设置图片加载回调 ShowImageViewInterface")
         }
@@ -44,29 +44,21 @@ class PhotoViewerFragment : BaseLazyFragment() {
         mIv.setExitLocation(mExitLocation)
         mIv.setImgSize(mImgSize)
 
-//        val dm = resources.displayMetrics
-//        var heigth = dm.heightPixels
-//        var width = dm.widthPixels
-//        mIv.translationX = mExitLocation[0].toFloat() - width / 2
-//        mIv.translationY = mExitLocation[1].toFloat() - heigth / 2
-//        mIv.scaleX = mImgSize[0].toFloat() / width
-//        mIv.scaleY = mImgSize[0].toFloat() / width
-
-//        // 循环查看是否添加上了图片
-//        Thread(Runnable {
-//            while (true) {
-//                if (mIv.drawable != null) {
-//                    activity!!.runOnUiThread {
-//                        loading.visibility = View.GONE
-//                    }
-//                    break
-//                }
-//                Thread.sleep(300)
-//            }
-//        }).start()
+        // 循环查看是否添加上了图片
+        Thread(Runnable {
+            while (true) {
+                if (mIv.drawable != null) {
+                    activity!!.runOnUiThread {
+                        loading.visibility = View.GONE
+                    }
+                    break
+                }
+                Thread.sleep(300)
+            }
+        }).start()
 
         var intAlpha = 255
-//        root.background.alpha = intAlpha
+        root.background.alpha = intAlpha
         mIv.rootView = root
         mIv.setOnViewFingerUpListener {
             alpha = 1f
@@ -122,8 +114,6 @@ class PhotoViewerFragment : BaseLazyFragment() {
 
             if (alpha >= 0.6)
                 mIv.attacher.scale = alpha   // 更改大小
-
-
         }
 
 

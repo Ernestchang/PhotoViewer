@@ -1,48 +1,45 @@
-package com.wanglu.photoviewerlibrary.single
+package com.wanglu.photoviewerlibrary
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.app.Activity
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import com.wanglu.photoviewerlibrary.R
-import kotlinx.android.synthetic.main.item_picture_single.view.*
+import kotlinx.android.synthetic.main.item_picture.view.*
 
-class SingleView constructor(context: Activity, arguments: Bundle) : FrameLayout(context) {
+
+class SingleViewInPager constructor(context: Activity, arguments: Bundle) : FrameLayout(context) {
 
     var exitListener: OnExitListener? = null
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.item_picture_single, this, true)
+        LayoutInflater.from(context).inflate(R.layout.item_picture, this, true)
 //        val mIv = findViewById<SinglePhotoView>(R.id.mIv)
 //        val iv_save = findViewById<ImageView>(R.id.iv_save)
 //        val tv_origin = findViewById<TextView>(R.id.tv_origin)
 //        val root = findViewById<RelativeLayout>(R.id.root)
 
-        val mExitLocation: IntArray = arguments!!.getIntArray("exit_location")
-        val mImgSize: IntArray = arguments!!.getIntArray("img_size")
+//        val mExitLocation: IntArray = arguments!!.getIntArray("exit_location")
+//        val mImgSize: IntArray = arguments!!.getIntArray("img_size")
         val mPicData = arguments!!.getString("pic_data")
 
-        if (SinglePhoto.mProcessInterface != null) {
-            SinglePhoto.mProcessInterface!!.processButton(tv_origin, iv_save, mIv)
+        if (PhotoViewer.mProcessInterface != null) {
+            PhotoViewer.mProcessInterface!!.processButton(tv_origin, iv_save, mIv)
         }
 
-        if (SinglePhoto.mInterface != null) {
-            SinglePhoto.mInterface!!.show(mIv, mPicData)
+        if (PhotoViewer.mInterface != null) {
+            PhotoViewer.mInterface!!.show(mIv, mPicData)
         } else {
             throw RuntimeException("请设置图片加载回调 ShowImageViewInterface")
         }
 
         var alpha = 1f  // 透明度
-        mIv.setExitLocation(mExitLocation)
-        mIv.setImgSize(mImgSize)
+//        mIv.setExitLocation(mExitLocation)
+//        mIv.setImgSize(mImgSize)
 
         var intAlpha = 255
-//        root.background.alpha = intAlpha
+        root.background.alpha = intAlpha
         mIv.rootView = root
         mIv.setOnViewFingerUpListener {
             alpha = 1f
@@ -70,21 +67,21 @@ class SingleView constructor(context: Activity, arguments: Bundle) : FrameLayout
         }).start()
 
         // 添加点击进入时的动画
-        if (arguments!!.getBoolean("in_anim", true))
-            mIv.post {
-                mIv.visibility = View.VISIBLE
-                val scaleOa = ObjectAnimator.ofFloat(mIv, "scale", mImgSize[0].toFloat() / mIv.width, 1f)
-                val xOa = ObjectAnimator.ofFloat(mIv, "translationX", mExitLocation[0].toFloat() - mIv.width / 2, 0f)
-                val yOa = ObjectAnimator.ofFloat(mIv, "translationY", mExitLocation[1].toFloat() - mIv.height / 2, 0f)
-                val alphaOa = ValueAnimator.ofInt(0, 255)
-                alphaOa.addUpdateListener({ valueAnimator ->
-                    root.background.alpha = valueAnimator.animatedValue as Int
-                })
-                val set = AnimatorSet()
-                set.duration = 250
-                set.playTogether(scaleOa, xOa, yOa, alphaOa)
-                set.start()
-            }
+//        if (arguments!!.getBoolean("in_anim", true))
+//            mIv.post {
+//                mIv.visibility = View.VISIBLE
+//                val scaleOa = ObjectAnimator.ofFloat(mIv, "scale", mImgSize[0].toFloat() / mIv.width, 1f)
+//                val xOa = ObjectAnimator.ofFloat(mIv, "translationX", mExitLocation[0].toFloat() - mIv.width / 2, 0f)
+//                val yOa = ObjectAnimator.ofFloat(mIv, "translationY", mExitLocation[1].toFloat() - mIv.height / 2, 0f)
+//                val alphaOa = ValueAnimator.ofInt(0, 255)
+//                alphaOa.addUpdateListener({ valueAnimator ->
+//                    root.background.alpha = valueAnimator.animatedValue as Int
+//                })
+//                val set = AnimatorSet()
+//                set.duration = 250
+//                set.playTogether(scaleOa, xOa, yOa, alphaOa)
+//                set.start()
+//            }
 
         root.isFocusableInTouchMode = true
         root.requestFocus()

@@ -1,11 +1,14 @@
 package com.wanglu.photoviewerlibrary
 
+import android.animation.LayoutTransition
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +19,7 @@ import android.widget.*
 /**
  * Created by WangLu on 2018/7/15.
  */
-object PhotoView {
+object PhotoViewer {
     internal var mInterface: ShowImageViewInterface? = null
     internal var mProcessInterface: ProcessButtonInterface? = null
 
@@ -57,12 +60,12 @@ object PhotoView {
     /**
      * 设置显示ImageView的接口
      */
-    fun setShowImageViewInterface(i: ShowImageViewInterface): PhotoView {
+    fun setShowImageViewInterface(i: ShowImageViewInterface): PhotoViewer {
         mInterface = i
         return this
     }
 
-    fun setProcessButtonInterface(i: ProcessButtonInterface): PhotoView {
+    fun setProcessButtonInterface(i: ProcessButtonInterface): PhotoViewer {
         mProcessInterface = i
         return this
     }
@@ -70,7 +73,7 @@ object PhotoView {
     /**
      * 设置点击一个图片
      */
-    fun setClickSingleImg(data: String, view: View): PhotoView {
+    fun setClickSingleImg(data: String, view: View): PhotoViewer {
         imgData = arrayListOf(data)
         clickView = view
         return this
@@ -79,18 +82,18 @@ object PhotoView {
     /**
      * 设置图片数据
      */
-    fun setData(data: ArrayList<String>): PhotoView {
+    fun setData(data: ArrayList<String>): PhotoViewer {
         imgData = data
         return this
     }
 
 
-    fun setImgContainer(container: AbsListView): PhotoView {
+    fun setImgContainer(container: AbsListView): PhotoViewer {
         this.container = container
         return this
     }
 
-    fun setImgContainer(container: RecyclerView): PhotoView {
+    fun setImgContainer(container: RecyclerView): PhotoViewer {
         this.container = container
         return this
     }
@@ -139,7 +142,7 @@ object PhotoView {
     /**
      * 设置当前页， 从0开始
      */
-    fun setCurrentPage(page: Int): PhotoView {
+    fun setCurrentPage(page: Int): PhotoViewer {
         currentPage = page
         return this
     }
@@ -160,23 +163,31 @@ object PhotoView {
         val decorView = activity.window.decorView as ViewGroup
 
         // 设置添加layout的动画
-//        val layoutTransition = LayoutTransition()
-//        val alphaOa = ObjectAnimator.ofFloat(null, "alpha", 0f, 1f)
-//        alphaOa.duration = 50
-//        layoutTransition.setAnimator(LayoutTransition.APPEARING, alphaOa)
-//        decorView.layoutTransition = layoutTransition
+        val layoutTransition = LayoutTransition()
+        val alphaOa = ObjectAnimator.ofFloat(null, "alpha", 0f, 1f)
+        alphaOa.duration = 100
+        layoutTransition.setAnimator(LayoutTransition.APPEARING, alphaOa)
+        decorView.layoutTransition = layoutTransition
 
         val frameLayout = FrameLayout(activity)
 
         val photoViewLayout = LayoutInflater.from(activity).inflate(R.layout.activity_photoviewer, null)
         val viewPager = photoViewLayout.findViewById<ViewPager>(R.id.mLookPicVP)
 
-        var fragments = mutableListOf<PhotoViewerFragment>()
+//        var fragments = mutableListOf<PhotoViewerFragment>()
+        var fragments = mutableListOf<SingleViewInPager>()
 
 
         for (i in 0 until imgData.size) {
-            val f = PhotoViewerFragment()
-            f.exitListener = object : PhotoViewerFragment.OnExitListener {
+
+            val b = Bundle()
+            b.putString("pic_data", imgData[i])
+//            b.putIntArray("exit_location", getCurrentViewLocation())
+//            b.putBoolean("in_anim", false)
+//            b.putIntArray("img_size", intArrayOf(getItemView().measuredWidth, getItemView().measuredHeight))
+            val f = SingleViewInPager(activity, b)
+
+            f.exitListener = object : SingleViewInPager.OnExitListener {
                 override fun exit() {
                     activity.runOnUiThread {
                         frameLayout.removeAllViews()
@@ -186,15 +197,10 @@ object PhotoView {
                 }
 
             }
-            val b = Bundle()
-            b.putString("pic_data", imgData[i])
-            b.putIntArray("exit_location", getCurrentViewLocation())
-            b.putIntArray("img_size", intArrayOf(getItemView().measuredWidth, getItemView().measuredHeight))
-            f.arguments = b
             fragments.add(f)
         }
 
-        val adapter = PhotoViewerPagerAdapter(fragments, activity.supportFragmentManager)
+        val adapter = PhotoPagerAdapter(fragments)
 
 
         viewPager.adapter = adapter
@@ -216,12 +222,12 @@ object PhotoView {
             override fun onPageSelected(position: Int) {
                 currentPage = position
 
-                val b = Bundle()
-                b.putString("pic_data", imgData[currentPage])
-                b.putIntArray("img_size", intArrayOf(getItemView().measuredWidth, getItemView().measuredHeight))
-                b.putBoolean("in_anim", false)
-                b.putIntArray("exit_location", getCurrentViewLocation())
-                fragments[position].arguments = b
+//                val b = Bundle()
+//                b.putString("pic_data", imgData[currentPage])
+//                b.putIntArray("img_size", intArrayOf(getItemView().measuredWidth, getItemView().measuredHeight))
+//                b.putBoolean("in_anim", false)
+//                b.putIntArray("exit_location", getCurrentViewLocation())
+//                fragments[position].arguments = b
 
             }
 
@@ -231,86 +237,86 @@ object PhotoView {
         frameLayout.addView(photoViewLayout)
 
 
-//        if (imgData.size > 1)
-//            frameLayout.post {
-//
-//                /**
-//                 * 实例化两个Group
-//                 */
-//                if (mFrameLayout != null) {
-//                    mFrameLayout!!.removeAllViews()
-//                    mFrameLayout = null
-//                }
-//                mFrameLayout = FrameLayout(activity)
-//                if (mDotGroup != null) {
-//                    mDotGroup!!.removeAllViews()
-//                    mDotGroup = null
-//                }
-//                mDotGroup = LinearLayout(activity)
-//
-//                if (mDotGroup!!.childCount != 0)
-//                    mDotGroup!!.removeAllViews()
-//                val dotParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-//                        ViewGroup.LayoutParams.WRAP_CONTENT)
-//                /**
-//                 * 未选中小圆点的间距
-//                 */
-//                dotParams.rightMargin = Utils.dp2px(activity, 12)
-//
-//                /**
-//                 * 创建未选中的小圆点
-//                 */
-//                for (i in 0 until imgData.size) {
-//                    val iv = ImageView(activity)
-//                    iv.setImageDrawable(activity.resources.getDrawable(mDot[0]))
-//                    iv.layoutParams = dotParams
-//                    mDotGroup!!.addView(iv)
-//                }
-//
-//                /**
-//                 * 设置小圆点Group的方向为水平
-//                 */
-//                mDotGroup!!.orientation = LinearLayout.HORIZONTAL
-//                /**
-//                 * 设置小圆点在中间
-//                 */
-//                mDotGroup!!.gravity = Gravity.CENTER or Gravity.BOTTOM
-//                /**
-//                 * 两个Group的大小都为match_parent
-//                 */
-//                val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-//                        ViewGroup.LayoutParams.MATCH_PARENT)
-//
-//
-//                params.bottomMargin = Utils.dp2px(activity, 70)
-//                /**
-//                 * 首先添加小圆点的Group
-//                 */
-//                frameLayout.addView(mDotGroup, params)
-//
-//                mDotGroup!!.post {
-//                    if (mSelectedDot != null) {
-//                        mSelectedDot = null
-//                    }
-//                    if (mSelectedDot == null) {
-//                        val iv = ImageView(activity)
-//                        iv.setImageDrawable(activity.resources.getDrawable(mDot[1]))
-//                        val params = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-//                        /**
-//                         * 设置选中小圆点的左边距
-//                         */
-//                        params.leftMargin = mDotGroup!!.getChildAt(0).x.toInt()
-//                        iv.translationX = (dotParams.rightMargin * currentPage + mDotGroup!!.getChildAt(0).width * currentPage).toFloat()
-//                        params.gravity = Gravity.BOTTOM
-//                        mFrameLayout!!.addView(iv, params)
-//                        mSelectedDot = iv
-//                    }
-//                    /**
-//                     * 然后添加包含未选中圆点和选中圆点的Group
-//                     */
-//                    frameLayout.addView(mFrameLayout, params)
-//                }
-//            }
+        if (imgData.size > 1)
+            frameLayout.post {
+
+                /**
+                 * 实例化两个Group
+                 */
+                if (mFrameLayout != null) {
+                    mFrameLayout!!.removeAllViews()
+                    mFrameLayout = null
+                }
+                mFrameLayout = FrameLayout(activity)
+                if (mDotGroup != null) {
+                    mDotGroup!!.removeAllViews()
+                    mDotGroup = null
+                }
+                mDotGroup = LinearLayout(activity)
+
+                if (mDotGroup!!.childCount != 0)
+                    mDotGroup!!.removeAllViews()
+                val dotParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT)
+                /**
+                 * 未选中小圆点的间距
+                 */
+                dotParams.rightMargin = Utils.dp2px(activity, 12)
+
+                /**
+                 * 创建未选中的小圆点
+                 */
+                for (i in 0 until imgData.size) {
+                    val iv = ImageView(activity)
+                    iv.setImageDrawable(activity.resources.getDrawable(mDot[0]))
+                    iv.layoutParams = dotParams
+                    mDotGroup!!.addView(iv)
+                }
+
+                /**
+                 * 设置小圆点Group的方向为水平
+                 */
+                mDotGroup!!.orientation = LinearLayout.HORIZONTAL
+                /**
+                 * 设置小圆点在中间
+                 */
+                mDotGroup!!.gravity = Gravity.CENTER or Gravity.BOTTOM
+                /**
+                 * 两个Group的大小都为match_parent
+                 */
+                val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT)
+
+
+                params.bottomMargin = Utils.dp2px(activity, 70)
+                /**
+                 * 首先添加小圆点的Group
+                 */
+                frameLayout.addView(mDotGroup, params)
+
+                mDotGroup!!.post {
+                    if (mSelectedDot != null) {
+                        mSelectedDot = null
+                    }
+                    if (mSelectedDot == null) {
+                        val iv = ImageView(activity)
+                        iv.setImageDrawable(activity.resources.getDrawable(mDot[1]))
+                        val params = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                        /**
+                         * 设置选中小圆点的左边距
+                         */
+                        params.leftMargin = mDotGroup!!.getChildAt(0).x.toInt()
+                        iv.translationX = (dotParams.rightMargin * currentPage + mDotGroup!!.getChildAt(0).width * currentPage).toFloat()
+                        params.gravity = Gravity.BOTTOM
+                        mFrameLayout!!.addView(iv, params)
+                        mSelectedDot = iv
+                    }
+                    /**
+                     * 然后添加包含未选中圆点和选中圆点的Group
+                     */
+                    frameLayout.addView(mFrameLayout, params)
+                }
+            }
         decorView.addView(frameLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
     }

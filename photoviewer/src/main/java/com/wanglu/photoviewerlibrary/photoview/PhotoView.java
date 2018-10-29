@@ -15,7 +15,6 @@
  *******************************************************************************/
 package com.wanglu.photoviewerlibrary.photoview;
 
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -146,20 +145,25 @@ public class PhotoView extends AppCompatImageView {
 
 
     public void exit() {
+//
+//        Matrix m = new Matrix();
+//
+//        m.postScale(((float) mImgSize[0] / getWidth()), ((float) mImgSize[1] / getHeight()));
+//
+//        ObjectAnimator scaleOa = ObjectAnimator.ofFloat(this, "scale", attacher.getScale(m));
+//
+//        ObjectAnimator xOa = ObjectAnimator.ofFloat(this, "translationX", mExitLocation[0] - getWidth() / 2 + getScrollX());
+//        ObjectAnimator yOa = ObjectAnimator.ofFloat(this, "translationY", mExitLocation[1] - getHeight() / 2 + getScrollY());
+//
+//        AnimatorSet set = new AnimatorSet();
+//        set.setDuration(250);
+//        set.playTogether(scaleOa, xOa, yOa);
 
-        Matrix m = new Matrix();
+//        set.start();
 
-        m.postScale(((float) mImgSize[0] / getWidth()), ((float) mImgSize[1] / getHeight()));
-
-        ObjectAnimator scaleOa = ObjectAnimator.ofFloat(this, "scale", attacher.getScale(m));
-
-        ObjectAnimator xOa = ObjectAnimator.ofFloat(this, "translationX", mExitLocation[0] - getWidth() / 2 + getScrollX());
-        ObjectAnimator yOa = ObjectAnimator.ofFloat(this, "translationY", mExitLocation[1] - getHeight() / 2 + getScrollY());
-
-        AnimatorSet set = new AnimatorSet();
-        set.setDuration(250);
-        set.playTogether(scaleOa, xOa, yOa);
-
+        ObjectAnimator alpah = ObjectAnimator.ofFloat(this, "alpha", this.alpha, 0);
+        alpah.setDuration(250);
+        alpah.start();
 
         if (DrawableCompat.getAlpha(getRootView().getBackground()) > 0) {
             ValueAnimator bgVa = ValueAnimator.ofInt(DrawableCompat.getAlpha(getRootView().getBackground()), 0);
@@ -172,7 +176,6 @@ public class PhotoView extends AppCompatImageView {
             });
             bgVa.start();
         }
-        set.start();
 
         new Timer().schedule(new TimerTask() {
             @Override

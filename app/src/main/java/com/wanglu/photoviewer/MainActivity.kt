@@ -2,9 +2,10 @@ package com.wanglu.photoviewer
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.ImageView
 import com.bumptech.glide.Glide
-import com.wanglu.photoviewerlibrary.single.SinglePhoto
+import com.wanglu.photoviewerlibrary.PhotoViewer
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -24,35 +25,37 @@ class MainActivity : AppCompatActivity() {
         gv.adapter = adapter
         adapter.setData(picData)
         gv.setOnItemClickListener { _, view, position, _ ->
-            //            PhotoView
-//                    .setData(picData)
-//                    .setCurrentPage(position)
-//                    .setImgContainer(gv)
-//                    .setShowImageViewInterface(object : PhotoView.ShowImageViewInterface {
+            PhotoViewer
+                    .setData(picData)
+                    .setCurrentPage(position)
+                    .setImgContainer(gv)
+                    .setShowImageViewInterface(object : PhotoViewer.ShowImageViewInterface {
+                        override fun show(iv: ImageView, url: String) {
+                            Log.e("ernest", "fuck url:" + url);
+
+                            Glide.with(iv.context).load(url).into(iv)
+                        }
+                    })
+                    .start(this)
+
+//            SinglePhoto
+//                    .setClickSingleImg(picData.get(position), view)
+////                    .setCurrentPage(position)
+////                    .setImgContainer(gv)
+//                    .setShowImageViewInterface(object : SinglePhoto.ShowImageViewInterface {
 //                        override fun show(iv: ImageView, url: String) {
 //                            Glide.with(iv.context).load(url).into(iv)
 //                        }
 //                    })
-//                    .start(this)
-
-            SinglePhoto
-                    .setClickSingleImg(picData.get(position), view)
-//                    .setCurrentPage(position)
-//                    .setImgContainer(gv)
-                    .setShowImageViewInterface(object : SinglePhoto.ShowImageViewInterface {
-                        override fun show(iv: ImageView, url: String) {
-                            Glide.with(iv.context).load(url).into(iv)
-                        }
-                    })
-                    .show(this)
+//                    .show(this)
         }
 
 //        Glide.with(this).load(picData[3]).into(iv)
 //
 //        iv.setOnClickListener {
-//            PhotoView
+//            PhotoViewer
 //                    .setClickSingleImg(picData[3], iv)
-//                    .setShowImageViewInterface(object : PhotoView.ShowImageViewInterface {
+//                    .setShowImageViewInterface(object : PhotoViewer.ShowImageViewInterface {
 //                        override fun show(iv: ImageView, url: String) {
 //                            Glide.with(iv.context).load(url).into(iv)
 //                        }

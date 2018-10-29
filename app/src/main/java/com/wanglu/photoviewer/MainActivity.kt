@@ -28,11 +28,14 @@ class MainActivity : AppCompatActivity() {
             PhotoViewer
                     .setData(picData)
                     .setCurrentPage(position)
-                    .setImgContainer(gv)
+                    .setProcessButtonInterface(object : PhotoViewer.ProcessButtonInterface {
+                        override fun processButton(url: String) {
+                            Log.e("ernest", "url:" + url);
+                        }
+                    })
+//                    .setImgContainer(gv)
                     .setShowImageViewInterface(object : PhotoViewer.ShowImageViewInterface {
                         override fun show(iv: ImageView, url: String) {
-                            Log.e("ernest", "fuck url:" + url);
-
                             Glide.with(iv.context).load(url).into(iv)
                         }
                     })

@@ -29,7 +29,7 @@
         android:layout_marginBottom="15.5dp"
         android:background="@drawable/sele_chat_preview"
         android:gravity="center"
-        android:text="查看原图"
+        android:text="2/23"
         android:textColor="#fff"
         android:textSize="12sp"
         android:visibility="invisible" />

@@ -1,7 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.wanglu.photoviewerlibrary.ViewPagerFixed xmlns:android="http://schemas.android.com/apk/res/android"
-                                              android:id="@+id/mLookPicVP"
-                                              android:layout_width="match_parent"
-                                              android:layout_height="match_parent"
-                                              android:background="@color/transparentColor"/>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000">
+
+    <com.wanglu.photoviewerlibrary.ViewPagerFixed xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mLookPicVP"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparentColor" />
+
+
+    <TextView
+        android:id="@+id/tv_index"
+        android:layout_width="60dp"
+        android:layout_height="26dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="15.5dp"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/sele_chat_preview"
+        android:gravity="center"
+        android:text="2/45"
+        android:textColor="#fff"
+        android:textSize="13sp"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/iv_save"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="16.5dp"
+        android:layout_marginRight="15.5dp"
+        android:background="@drawable/sele_chat_preview"
+        android:padding="6dp"
+        android:src="@drawable/icon_chat_download"
+        android:visibility="visible" />
+</RelativeLayout>
+
 

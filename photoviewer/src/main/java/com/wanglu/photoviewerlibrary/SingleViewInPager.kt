@@ -24,9 +24,6 @@ class SingleViewInPager constructor(context: Activity, arguments: Bundle) : Fram
 //        val mImgSize: IntArray = arguments!!.getIntArray("img_size")
         val mPicData = arguments!!.getString("pic_data")
 
-        if (PhotoViewer.mProcessInterface != null) {
-            PhotoViewer.mProcessInterface!!.processButton(tv_origin, iv_save, mIv)
-        }
 
         if (PhotoViewer.mInterface != null) {
             PhotoViewer.mInterface!!.show(mIv, mPicData)

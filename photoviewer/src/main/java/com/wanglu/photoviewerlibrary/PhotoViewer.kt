@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.wanglu.photoviewerlibrary.R.id.tv_index
 
 
 @SuppressLint("StaticFieldLeak")
@@ -54,7 +55,7 @@ object PhotoViewer {
     }
 
     interface ProcessButtonInterface {
-        fun processButton(tvOrigin: TextView, ivSave: ImageView, ivFull: ImageView)
+        fun processButton(url: String)
     }
 
     /**
@@ -173,6 +174,15 @@ object PhotoViewer {
 
         val photoViewLayout = LayoutInflater.from(activity).inflate(R.layout.activity_photoviewer, null)
         val viewPager = photoViewLayout.findViewById<ViewPager>(R.id.mLookPicVP)
+//        val tv_index = photoViewLayout.findViewById<TextView>(R.id.tv_index)
+        val iv_save = photoViewLayout.findViewById<ImageView>(R.id.iv_save)
+        iv_save.setOnClickListener(View.OnClickListener {
+            if (mProcessInterface != null) {
+                mProcessInterface!!.processButton(imgData[currentPage])
+            }
+        })
+
+//        tv_index.setText((currentPage+1).toString() + "/" + imgData.size)
 
 //        var fragments = mutableListOf<PhotoViewerFragment>()
         var fragments = mutableListOf<SingleViewInPager>()
@@ -221,6 +231,9 @@ object PhotoViewer {
 
             override fun onPageSelected(position: Int) {
                 currentPage = position
+
+//                tv_index.setText((currentPage + 1).toString() + "/" + imgData.size)
+
 
 //                val b = Bundle()
 //                b.putString("pic_data", imgData[currentPage])

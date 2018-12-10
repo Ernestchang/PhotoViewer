@@ -160,7 +160,7 @@ public class SinglePhotoView extends AppCompatImageView {
 
         Matrix m = new Matrix();
         m.postScale(((float) mImgSize[0] / getMeasuredWidth()), ((float) mImgSize[1] / getMeasuredHeight()));
-        Log.e("ernest", "attacher.getScale():" + attacher.getScale());
+        Log.e("ernest", "attacher.getScale(m):" + attacher.getScale(m));
         ObjectAnimator scaleOa = ObjectAnimator.ofFloat(this, "scale", attacher.getScale(m));
 
         ObjectAnimator xOa = ObjectAnimator.ofFloat(this, "translationX", mExitLocation[0] - getWidth() / 2 + getScrollX());

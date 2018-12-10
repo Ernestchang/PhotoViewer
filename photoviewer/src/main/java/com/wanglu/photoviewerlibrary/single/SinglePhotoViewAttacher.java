@@ -22,6 +22,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -559,7 +560,7 @@ public class SinglePhotoViewAttacher implements View.OnTouchListener,
 
     public void setScale(float scale, float focalX, float focalY,
                          boolean animate) {
-
+        Log.d("ernest", "setScale scale:" + scale);
         // Check to see if the scale is within bounds
         if (scale > mMaxScale) {
 //            throw new IllegalArgumentException("Scale must be within the range of minScale and maxScale");

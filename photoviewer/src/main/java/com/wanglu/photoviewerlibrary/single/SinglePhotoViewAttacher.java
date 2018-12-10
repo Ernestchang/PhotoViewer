@@ -565,8 +565,6 @@ public class SinglePhotoViewAttacher implements View.OnTouchListener,
         if (scale > mMaxScale) {
 //            throw new IllegalArgumentException("Scale must be within the range of minScale and maxScale");
             scale = mMaxScale;
-        } else if (scale < mMinScale) {
-            scale = mMinScale;
         }
 
         if (animate) {

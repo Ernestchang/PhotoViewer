@@ -27,6 +27,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.View;
 import android.widget.Scroller;
@@ -160,6 +161,8 @@ public class PhotoView extends AppCompatImageView {
 //        set.playTogether(scaleOa, xOa, yOa);
 
 //        set.start();
+
+        Log.e("ernest", "attacher.getScale():" + attacher.getScale());
 
         ObjectAnimator alpah = ObjectAnimator.ofFloat(this, "alpha", this.alpha, 0);
         alpah.setDuration(250);

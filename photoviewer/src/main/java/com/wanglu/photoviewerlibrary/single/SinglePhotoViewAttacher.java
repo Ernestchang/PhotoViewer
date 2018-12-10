@@ -124,7 +124,6 @@ public class SinglePhotoViewAttacher implements View.OnTouchListener,
                 return; // Do not drag if we are already scaling
             }
 
-
             ViewParent parent = mImageView.getParent();
             // 这里判断向下滑的距离是否大于左右滑
             if (!isBottomDrag && Math.abs(dy) - Math.abs(dx) > 0.5) {
@@ -172,8 +171,10 @@ public class SinglePhotoViewAttacher implements View.OnTouchListener,
 
         @Override
         public void onScale(float scaleFactor, float focusX, float focusY) {
-
             if ((getScale() < mMaxScale || scaleFactor < 1f) && (getScale() > mMinScale || scaleFactor > 1f)) {
+                if (CURRENT_STATE != STATE_SCALE) {
+                    CURRENT_STATE = STATE_SCALE;
+                }
                 if (mScaleChangeListener != null) {
                     mScaleChangeListener.onScaleChange(scaleFactor, focusX, focusY);
                 }
@@ -408,50 +409,44 @@ public class SinglePhotoViewAttacher implements View.OnTouchListener,
                         // to min scale
                         // 这里如果小于最小值则恢复成最小值
                         // 这里恢复缩放大小
-
-                        if (getScale() <= DEFAULT_MIN_SCALE) {
-
-                            // 判断  如果是在缩放中则返回
-                            if (CURRENT_STATE == STATE_SCALE) {
-                                if (getScale() < mMinScale) {
-                                    RectF rect = getDisplayRect();
-                                    if (rect != null) {
-                                        v.post(new AnimatedZoomRunnable(getScale(), mMinScale,
-                                                rect.centerX(), rect.centerY()));
-                                        handled = true;
-                                    }
-                                } else if (getScale() > mMaxScale) {
-                                    RectF rect = getDisplayRect();
-                                    if (rect != null) {
-                                        v.post(new AnimatedZoomRunnable(getScale(), mMaxScale,
-                                                rect.centerX(), rect.centerY()));
-                                        handled = true;
-                                    }
+                        // 判断  如果是在缩放中则返回
+                        if (CURRENT_STATE == STATE_SCALE) {
+                            if (getScale() < mMinScale) {
+                                RectF rect = getDisplayRect();
+                                if (rect != null) {
+                                    v.post(new AnimatedZoomRunnable(getScale(), mMinScale,
+                                            rect.centerX(), rect.centerY()));
+                                    handled = true;
                                 }
-                            } else {
-                                // 如果不是缩放中则判断是否小于400
-                                if (getScale() < mMinScale && mImageView.getRootView().getBackground().getAlpha() == 255) {
-                                    RectF rect = getDisplayRect();
-                                    if (rect != null) {
-                                        v.post(new AnimatedZoomRunnable(getScale(), mMinScale,
-                                                rect.centerX(), rect.centerY()));
-                                        handled = true;
-                                    }
+                            } else if (getScale() > mMaxScale) {
+                                RectF rect = getDisplayRect();
+                                if (rect != null) {
+                                    v.post(new AnimatedZoomRunnable(getScale(), mMaxScale,
+                                            rect.centerX(), rect.centerY()));
+                                    handled = true;
                                 }
                             }
-
-                            if (mOnViewFingerUpListener != null) {
-                                ViewParent parent1 = v.getParent();
-                                if (parent1 != null) {
-                                    parent1.requestDisallowInterceptTouchEvent(false);
+                        } else {
+                            // 如果不是缩放中则判断是否小于400
+                            if (getScale() < mMinScale && mImageView.getRootView().getBackground().getAlpha() == 255) {
+                                RectF rect = getDisplayRect();
+                                if (rect != null) {
+                                    v.post(new AnimatedZoomRunnable(getScale(), mMinScale,
+                                            rect.centerX(), rect.centerY()));
+                                    handled = true;
                                 }
+                            }
+                        }
+
+                        if (mOnViewFingerUpListener != null) {
+                            ViewParent parent1 = v.getParent();
+                            if (parent1 != null) {
+                                parent1.requestDisallowInterceptTouchEvent(false);
+                            }
 //                                isBottomDrag = false;
-                                if (CURRENT_STATE != STATE_SCALE) {
-
-                                    mOnViewFingerUpListener.onViewFingerUp();
-                                }
+                            if (CURRENT_STATE != STATE_SCALE) {
+                                mOnViewFingerUpListener.onViewFingerUp();
                             }
-
                         }
                         CURRENT_STATE = STATE_FINGER_UP;
                         break;
@@ -495,6 +490,16 @@ public class SinglePhotoViewAttacher implements View.OnTouchListener,
     public void setMediumScale(float mediumScale) {
         Util.checkZoomLevels(mMinScale, mediumScale, mMaxScale);
         mMidScale = mediumScale;
+    }
+
+    public float getMediumScale(float mediumScale) {
+        if (mediumScale > mMaxScale) {
+            return mMaxScale;
+        } else if (mediumScale < mMinScale) {
+            return mMinScale;
+        }
+        return mediumScale;
+
     }
 
     public void setMaximumScale(float maximumScale) {
@@ -554,9 +559,13 @@ public class SinglePhotoViewAttacher implements View.OnTouchListener,
 
     public void setScale(float scale, float focalX, float focalY,
                          boolean animate) {
+
         // Check to see if the scale is within bounds
         if (scale > mMaxScale) {
-            throw new IllegalArgumentException("Scale must be within the range of minScale and maxScale");
+//            throw new IllegalArgumentException("Scale must be within the range of minScale and maxScale");
+            scale = mMaxScale;
+        } else if (scale < mMinScale) {
+            scale = mMinScale;
         }
 
         if (animate) {
